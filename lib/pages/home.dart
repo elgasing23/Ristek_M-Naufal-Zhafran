@@ -2,11 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ristek_todoapp/pages/todo.dart';
 import 'package:ristek_todoapp/pages/todo_item.dart';
+import 'package:ristek_todoapp/pages/addtask.dart';
 
-class MyWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
   MyWidget({super.key});
 
-  final todosList = ToDo.todoList();
+  @override
+  MyWidgetState createState() => MyWidgetState();
+}
+
+class MyWidgetState extends State<MyWidget> {
+  List<ToDo> todosList = []; 
+
+ 
+  void addTask(ToDo newTask) {
+    setState(() {
+      todosList.add(newTask);
+    });
+  }
+
+  void editTask(ToDo task) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddTaskPage(
+          onTaskAdded: (updatedTask) {
+            setState(() {
+              int index = todosList.indexWhere((t) => t.id == task.id);
+              todosList[index] = updatedTask;
+            });
+          },
+          todo: task,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String tanggal = DateFormat('EEEE, MMM d yyyy').format(DateTime.now());
@@ -53,7 +84,14 @@ class MyWidget extends StatelessWidget {
           ),
         ),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTaskPage(onTaskAdded: addTask),
+              ),
+            );
+          },
           backgroundColor: const Color.fromARGB(232, 88, 24, 190),
           elevation: 0,
           child: Icon(Icons.add, color: Colors.black),
@@ -107,9 +145,11 @@ class MyWidget extends StatelessWidget {
                     ),
                   ),
 
-                  for ( ToDo todo in todosList)
-                    TodoItem(todo: todo,),
-    
+                  for (ToDo todo in todosList)
+                    GestureDetector(
+                      onTap: () => editTask(todo),
+                      child: TodoItem(todo: todo, onTodoToggle: (String id) {  },),
+                    ),
                 ],
               ),
             ),
