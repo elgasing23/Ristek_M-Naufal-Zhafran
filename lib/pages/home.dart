@@ -67,36 +67,56 @@ class MyWidget extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      body: Padding(
+      body: 
+      Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Welcome User",
-              style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              "Have a nice day !",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
-            ),
             Expanded(
             child: ListView(
               children: [
                 Container(
+                  margin: EdgeInsets.only(bottom: 4),
+                  child: 
+                    Text("Welcome User",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900, 
+                      color: Colors.white
+                      ),
+                  )
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: 
+                    Text("Have a nice day ! ",
+                    style: TextStyle(
+                      fontSize: 16, 
+                      color: Colors.white70
+                      ),
+                  )
+                ),
+                Container(
                   margin: EdgeInsets.only(top: 30, bottom: 20),
                   child: Text("Daily Task",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                )
+                  ),
                 ),
+                
                 TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                TodoItem(),
+                
               ],
             )
             )
