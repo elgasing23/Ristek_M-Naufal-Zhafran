@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Fibra',
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: const MyWidget(),
+      home: MyWidget(),
     );
   }
 }

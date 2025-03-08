@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ristek_todoapp/pages/todo.dart';
 import 'package:ristek_todoapp/pages/todo_item.dart';
 
 class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+  MyWidget({super.key});
 
+  final todosList = ToDo.todoList();
   @override
   Widget build(BuildContext context) {
     String tanggal = DateFormat('EEEE, MMM d yyyy').format(DateTime.now());
@@ -58,7 +60,7 @@ class MyWidget extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      
+
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
@@ -67,59 +69,50 @@ class MyWidget extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      body: 
-      Padding(
+      body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-            child: ListView(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 4),
-                  child: 
-                    Text("Welcome User",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900, 
-                      color: Colors.white
+              child: ListView(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      "Welcome User",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
                       ),
-                  )
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: 
-                    Text("Have a nice day ! ",
-                    style: TextStyle(
-                      fontSize: 16, 
-                      color: Colors.white70
-                      ),
-                  )
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 30, bottom: 20),
-                  child: Text("Daily Task",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
                   ),
-                ),
-                
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                TodoItem(),
-                
-              ],
-            )
-            )
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      "Have a nice day ! ",
+                      style: TextStyle(fontSize: 16, color: Colors.white70),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 30, bottom: 20),
+                    child: Text(
+                      "Daily Task",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  for ( ToDo todo in todosList)
+                    TodoItem(todo: todo,),
+    
+                ],
+              ),
+            ),
           ],
         ),
       ),
