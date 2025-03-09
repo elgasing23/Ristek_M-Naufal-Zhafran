@@ -38,7 +38,7 @@ class TodoItem extends StatelessWidget {
           color: const Color.fromARGB(232, 88, 24, 190),
         ),
         title: Text(
-          todo.todoText!,
+          todo.todoText,
           style: TextStyle(
             fontSize: 16,
             color: Colors.white,

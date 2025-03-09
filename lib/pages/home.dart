@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ristek_todoapp/pages/profilepage.dart';
 import 'package:ristek_todoapp/pages/todo.dart';
 import 'package:ristek_todoapp/pages/todo_item.dart';
 import 'package:ristek_todoapp/pages/addtask.dart';
@@ -12,9 +13,8 @@ class MyWidget extends StatefulWidget {
 }
 
 class MyWidgetState extends State<MyWidget> {
-  List<ToDo> todosList = []; 
+  List<ToDo> todosList = [];
 
- 
   void addTask(ToDo newTask) {
     setState(() {
       todosList.add(newTask);
@@ -25,15 +25,16 @@ class MyWidgetState extends State<MyWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddTaskPage(
-          onTaskAdded: (updatedTask) {
-            setState(() {
-              int index = todosList.indexWhere((t) => t.id == task.id);
-              todosList[index] = updatedTask;
-            });
-          },
-          todo: task,
-        ),
+        builder:
+            (context) => AddTaskPage(
+              onTaskAdded: (updatedTask) {
+                setState(() {
+                  int index = todosList.indexWhere((t) => t.id == task.id);
+                  todosList[index] = updatedTask;
+                });
+              },
+              todo: task,
+            ),
       ),
     );
   }
@@ -61,7 +62,12 @@ class MyWidgetState extends State<MyWidget> {
             SizedBox(width: 40),
             IconButton(
               icon: Icon(Icons.person_outline, color: Colors.grey),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profilepage()),
+                );
+              },
             ),
           ],
         ),
@@ -140,7 +146,7 @@ class MyWidgetState extends State<MyWidget> {
                   for (ToDo todo in todosList)
                     GestureDetector(
                       onTap: () => editTask(todo),
-                      child: TodoItem(todo: todo, onTodoToggle: (String id) {  },),
+                      child: TodoItem(todo: todo, onTodoToggle: (String id) {}),
                     ),
                 ],
               ),
