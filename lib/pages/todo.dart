@@ -17,7 +17,27 @@ class ToDo {
     required this.EndDate,
   });
 
-  static List<ToDo> todoList() {
-    return [];
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'todoText': todoText,
+      'category': category,
+      'isDone': isDone,
+      'Description': Description,
+      'StartDate': StartDate,
+      'EndDate': EndDate,
+    };
+  }
+
+  factory ToDo.fromJson(Map<String, dynamic> json) {
+    return ToDo(
+      id: json['id'],
+      todoText: json['todoText'],
+      category: json['category'],
+      isDone: json['isDone'],
+      Description: json['Description'],
+      StartDate: json['StartDate'],
+      EndDate: json['EndDate'],
+    );
   }
 }
