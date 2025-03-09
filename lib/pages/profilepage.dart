@@ -1,16 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:ristek_todoapp/pages/addtask.dart';
 import 'package:ristek_todoapp/pages/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Profilepage extends StatelessWidget {
+class Profilepage extends StatefulWidget {
   Profilepage({super.key});
 
+  @override
+  ProfilepageState createState() => ProfilepageState();
+}
+
+class ProfilepageState extends State<Profilepage> {
   final TextEditingController nameController = TextEditingController(text: "Your Name");
   final TextEditingController majorController = TextEditingController(text: "Your Major");
   final TextEditingController hobbyController = TextEditingController(text: "Your Hobby");
   final TextEditingController dobController = TextEditingController(text: "DD-MM-YYYY");
   final TextEditingController emailController = TextEditingController(text: "email@ristek.ui.ac.id");
-  
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  void saveProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('name', nameController.text);
+    prefs.setString('major', majorController.text);
+    prefs.setString('hobby', hobbyController.text);
+    prefs.setString('dob', dobController.text);
+    prefs.setString('email', emailController.text);
+  }
+
+  void loadProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nameController.text = prefs.getString('name') ?? "Your Name";
+      majorController.text = prefs.getString('major') ?? "Your Major";
+      hobbyController.text = prefs.getString('hobby') ?? "Your Hobby";
+      dobController.text = prefs.getString('dob') ?? "DD-MM-YYYY";
+      emailController.text = prefs.getString('email') ?? "email@ristek.ui.ac.id";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +91,7 @@ class Profilepage extends StatelessWidget {
                     padding: EdgeInsets.all(5),
                     child: Icon(
                       Icons.edit,
-                      color: Colors.purple,
+                      color: const Color.fromARGB(232, 88, 24, 190),
                       size: 22,
                     ),
                   ),
@@ -136,58 +167,58 @@ class Profilepage extends StatelessWidget {
   }
 
   Widget buildProfileField(String label, TextEditingController controller, {IconData? icon}) {
-  FocusNode focusNode = FocusNode();
-  bool isEditing = false;
+    FocusNode focusNode = FocusNode();
+    bool isEditing = false;
 
-  return StatefulBuilder(
-    builder: (context, setState) {
-      focusNode.addListener(() {
-        setState(() {
-          isEditing = focusNode.hasFocus || controller.text.isNotEmpty;
+    return StatefulBuilder(
+      builder: (context, setState) {
+        focusNode.addListener(() {
+          setState(() {
+            isEditing = focusNode.hasFocus || controller.text.isNotEmpty;
+          });
         });
-      });
 
-      return Padding(
-        padding: EdgeInsets.only(bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 6),
-            TextField(
-              controller: controller,
-              focusNode: focusNode,
-              style: TextStyle(
-                color: isEditing ? Colors.white : Colors.white54, 
-                fontSize: 18,
-              ),
-              decoration: InputDecoration(
-                prefixIcon: icon != null ? Icon(icon, color: Colors.white60) : null,
-                filled: true,
-                fillColor: Colors.grey[900],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.white30),
+        return Padding(
+          padding: EdgeInsets.only(bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.purple, width: 2),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
               ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
+              SizedBox(height: 6),
+              TextField(
+                controller: controller,
+                focusNode: focusNode,
+                onChanged: (value) => saveProfile(), 
+                style: TextStyle(
+                  color: isEditing ? Colors.white : Colors.white54, 
+                  fontSize: 18,
+                ),
+                decoration: InputDecoration(
+                  prefixIcon: icon != null ? Icon(icon, color: Colors.white60) : null,
+                  filled: true,
+                  fillColor: Colors.grey[900],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.white30),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: const Color.fromARGB(232, 88, 24, 190), width: 2),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
