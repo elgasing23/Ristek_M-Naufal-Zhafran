@@ -29,10 +29,6 @@ class ToDo {
     };
   }
 
-<<<<<<< HEAD
-=======
-  // Buat objek dari JSON
->>>>>>> 98249326b3dd9cbaa5474006195c681ba3d3fbd8
   factory ToDo.fromJson(Map<String, dynamic> json) {
     return ToDo(
       id: json['id'],
