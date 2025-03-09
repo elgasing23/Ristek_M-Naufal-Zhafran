@@ -16,8 +16,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   String category = "Daily Task";
-  String startDate = DateFormat('MMM-dd-yyyy').format(DateTime.now());
-  String endDate = DateFormat('MMM-dd-yyyy').format(DateTime.now().add(Duration(days: 1)));
+  late String startDate;
+  late String endDate;
 
   @override
   void initState() {
@@ -25,24 +25,34 @@ class _AddTaskPageState extends State<AddTaskPage> {
     if (widget.todo != null) {
       _titleController.text = widget.todo!.todoText;
       category = widget.todo!.category;
+      _descController.text = widget.todo!.Description;
+      startDate = widget.todo!.StartDate; 
+      endDate = widget.todo!.EndDate; 
+    } else {
+      startDate = DateFormat('MMM-dd-yyyy').format(DateTime.now());
+      endDate = DateFormat('MMM-dd-yyyy').format(DateTime.now().add(Duration(days: 1)));
     }
   }
 
-  void _selectDate(bool isStart) async {
+  void _selectEndDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(), 
       lastDate: DateTime(2101),
     );
 
     if (pickedDate != null) {
+      String formattedDate = DateFormat('MMM-dd-yyyy').format(pickedDate);
+      if (pickedDate.isBefore(DateFormat('MMM-dd-yyyy').parse(startDate))) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("End date tidak boleh lebih kecil dari start date")),
+        );
+        return;
+      }
+
       setState(() {
-        if (isStart) {
-          startDate = DateFormat('MMM-dd-yyyy').format(pickedDate);
-        } else {
-          endDate = DateFormat('MMM-dd-yyyy').format(pickedDate);
-        }
+        endDate = formattedDate;
       });
     }
   }
@@ -54,10 +64,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
       id: widget.todo?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       todoText: _titleController.text,
       category: category,
+      Description: _descController.text,
+      StartDate: startDate, 
+      EndDate: endDate, 
     );
 
     widget.onTaskAdded(newTask);
-    Navigator.pop(context);
+    Navigator.pop(context, newTask);
   }
 
   @override
@@ -76,15 +89,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      widget.todo == null ? "Add Task" : "Edit Task",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text(
+                        widget.todo == null ? "Add Task" : "Edit Task",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
                     ),
                   ),
                   Align(
@@ -107,8 +120,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildDatePicker("Start", startDate, () => _selectDate(true)),
-                      _buildDatePicker("Ends", endDate, () => _selectDate(false)),
+                      _buildStaticDatePicker("Start", startDate),
+                      _buildDatePicker("Ends", endDate, _selectEndDate),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -132,6 +145,30 @@ class _AddTaskPageState extends State<AddTaskPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStaticDatePicker(String label, String date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 5),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.grey[800],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.calendar_today, color: Colors.white, size: 18),
+              const SizedBox(width: 10),
+              Text(date, style: const TextStyle(color: Colors.white, fontSize: 16)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -185,7 +222,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   Widget _buildCategoryButtons() {
-    return Column(
+     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text("Category", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),

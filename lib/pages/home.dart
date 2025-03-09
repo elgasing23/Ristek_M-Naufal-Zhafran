@@ -21,22 +21,23 @@ class MyWidgetState extends State<MyWidget> {
     });
   }
 
-  void editTask(ToDo task) {
-    Navigator.push(
+  void editTask(ToDo task) async{
+    final newTask = await Navigator.push(
       context,
       MaterialPageRoute(
         builder:
             (context) => AddTaskPage(
-              onTaskAdded: (updatedTask) {
-                setState(() {
-                  int index = todosList.indexWhere((t) => t.id == task.id);
-                  todosList[index] = updatedTask;
-                });
-              },
+              onTaskAdded: (newTask) {},
               todo: task,
             ),
       ),
     );
+    if (newTask != null) {
+    setState(() {
+      todosList.removeWhere((t) => t.id == task.id);
+      todosList.add(newTask);
+    });
+  }
   }
 
   void deleteTask(String id) {
