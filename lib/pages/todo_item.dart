@@ -4,7 +4,15 @@ import 'package:ristek_todoapp/pages/todo.dart';
 
 class TodoItem extends StatelessWidget {
   final ToDo todo;
-  const TodoItem({Key? key, required this.todo, required void Function(String id) onTodoToggle}) : super(key: key);
+  final Function(String) onDelete; 
+  final Function(String) onTodoToggle; 
+
+  const TodoItem({
+    Key? key,
+    required this.todo,
+    required this.onDelete, 
+    required this.onTodoToggle, 
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,17 +20,15 @@ class TodoItem extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 20),
       child: ListTile(
         onTap: () {
-            Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddTaskPage(
-          onTaskAdded: (updatedTask) {
-            
-          },
-          todo: todo,
-        ),
-      ),
-    );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddTaskPage(
+                onTaskAdded: (updatedTask) {},
+                todo: todo,
+              ),
+            ),
+          );
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -33,16 +39,19 @@ class TodoItem extends StatelessWidget {
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         tileColor: Colors.black,
-        leading: Icon(
-          todo.isDone? Icons.check_box : Icons.check_box_outline_blank,
-          color: const Color.fromARGB(232, 88, 24, 190),
+        leading: IconButton(
+          icon: Icon(
+            todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
+            color: const Color.fromARGB(232, 88, 24, 190),
+          ),
+          onPressed: () => onTodoToggle(todo.id!), 
         ),
         title: Text(
           todo.todoText,
           style: TextStyle(
             fontSize: 16,
             color: Colors.white,
-            decoration: todo.isDone? TextDecoration.lineThrough : null,
+            decoration: todo.isDone ? TextDecoration.lineThrough : null,
           ),
         ),
         trailing: Container(
@@ -58,7 +67,7 @@ class TodoItem extends StatelessWidget {
             color: Colors.black,
             iconSize: 18,
             icon: Icon(Icons.delete),
-            onPressed: () {},
+            onPressed: () => onDelete(todo.id!), 
           ),
         ),
       ),

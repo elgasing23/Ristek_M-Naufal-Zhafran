@@ -39,6 +39,21 @@ class MyWidgetState extends State<MyWidget> {
     );
   }
 
+  void deleteTask(String id) {
+    setState(() {
+      todosList.removeWhere((task) => task.id == id);
+    });
+  }
+
+  void toggleTaskCompletion(String id) {
+    setState(() {
+      int index = todosList.indexWhere((task) => task.id == id);
+      if (index != -1) {
+        todosList[index].isDone = !todosList[index].isDone;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String tanggal = DateFormat('EEEE, MMM d yyyy').format(DateTime.now());
@@ -110,46 +125,56 @@ class MyWidgetState extends State<MyWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      "Welcome User",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: Text(
-                      "Have a nice day ! ",
-                      style: TextStyle(fontSize: 16, color: Colors.white70),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 30, bottom: 20),
-                    child: Text(
-                      "Daily Task",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  for (ToDo todo in todosList)
-                    GestureDetector(
-                      onTap: () => editTask(todo),
-                      child: TodoItem(todo: todo, onTodoToggle: (String id) {}),
-                    ),
-                ],
+            Container(
+              margin: EdgeInsets.only(bottom: 4),
+              child: Text(
+                "Welcome User",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
               ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 20),
+              child: Text(
+                "Have a nice day ! ",
+                style: TextStyle(fontSize: 16, color: Colors.white70),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 30, bottom: 20),
+              child: Text(
+                "Daily Task",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Expanded(
+              child: todosList.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No tasks available",
+                        style: TextStyle(color: Colors.white70, fontSize: 18),
+                      ),
+                    )
+                  : ListView(
+                      children: [
+                        for (ToDo todo in todosList)
+                          GestureDetector(
+                            onTap: () => editTask(todo),
+                            child: TodoItem(
+                              todo: todo,
+                              onTodoToggle: toggleTaskCompletion,
+                              onDelete: deleteTask,
+                            ),
+                          ),
+                      ],
+                    ),
             ),
           ],
         ),
