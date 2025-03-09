@@ -58,15 +58,7 @@ class MyWidgetState extends State<MyWidget> {
               ),
               onPressed: () {},
             ),
-            IconButton(
-              icon: Icon(Icons.assignment, color: Colors.grey),
-              onPressed: () {},
-            ),
             SizedBox(width: 40),
-            IconButton(
-              icon: Icon(Icons.priority_high, color: Colors.grey),
-              onPressed: () {},
-            ),
             IconButton(
               icon: Icon(Icons.person_outline, color: Colors.grey),
               onPressed: () {},
