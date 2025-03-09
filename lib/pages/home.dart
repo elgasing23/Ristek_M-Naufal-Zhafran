@@ -4,46 +4,76 @@ import 'package:ristek_todoapp/pages/profilepage.dart';
 import 'package:ristek_todoapp/pages/todo.dart';
 import 'package:ristek_todoapp/pages/todo_item.dart';
 import 'package:ristek_todoapp/pages/addtask.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
 
 class MyWidget extends StatefulWidget {
   MyWidget({super.key});
 
   @override
   MyWidgetState createState() => MyWidgetState();
+  
 }
 
 class MyWidgetState extends State<MyWidget> {
   List<ToDo> todosList = [];
 
+  @override
+  void initState() {
+    super.initState();
+    loadTasks(); 
+  }
+  
+  void saveTasks() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> taskList =
+      todosList.map((task) => jsonEncode(task.toJson())).toList();
+  prefs.setStringList('tasks', taskList);
+ }
+
+ void loadTasks() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String>? taskList = prefs.getStringList('tasks');
+
+  if (taskList != null) {
+    setState(() {
+      todosList = taskList.map((task) => ToDo.fromJson(jsonDecode(task))).toList();
+    });
+  }
+}
+
   void addTask(ToDo newTask) {
     setState(() {
       todosList.add(newTask);
     });
+    saveTasks();
   }
 
   void editTask(ToDo task) async{
-    final newTask = await Navigator.push(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder:
             (context) => AddTaskPage(
-              onTaskAdded: (newTask) {},
+              onTaskAdded: (updatedTask) {
+                setState(() {
+              todosList.removeWhere((t) => t.id == task.id);
+              todosList.add(updatedTask);
+              });
+              saveTasks();
+              },
               todo: task,
             ),
       ),
     );
-    if (newTask != null) {
-    setState(() {
-      todosList.removeWhere((t) => t.id == task.id);
-      todosList.add(newTask);
-    });
-  }
   }
 
   void deleteTask(String id) {
     setState(() {
       todosList.removeWhere((task) => task.id == id);
     });
+    saveTasks();
   }
 
   void toggleTaskCompletion(String id) {
@@ -53,6 +83,7 @@ class MyWidgetState extends State<MyWidget> {
         todosList[index].isDone = !todosList[index].isDone;
       }
     });
+    saveTasks();
   }
 
   @override
@@ -183,3 +214,4 @@ class MyWidgetState extends State<MyWidget> {
     );
   }
 }
+
